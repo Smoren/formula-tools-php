@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smoren\FormulaTools\Validators;
 
 use InvalidArgumentException;
+use Smoren\FormulaTools\Exceptions\BracketsException;
 use Smoren\FormulaTools\Exceptions\InappropriateTokenException;
 use Smoren\FormulaTools\Exceptions\InappropriateTokenPairException;
 use Smoren\FormulaTools\Exceptions\InvalidTokenException;
@@ -64,14 +65,14 @@ class LogicFormulaValidator
             }
 
             if ($bracketsCount < 0) {
-                throw new InappropriateTokenException("Brackets error", $token);
+                throw new BracketsException("Brackets error", $token);
             }
         }
 
         $lastToken = $tokens[count($tokens) - 1];
 
         if ($bracketsCount !== 0) {
-            throw new InappropriateTokenException(
+            throw new BracketsException(
                 "Brackets error",
                 $lastToken
             );

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smoren\FormulaTools\Tests\Unit;
 
 use Codeception\Test\Unit;
+use Smoren\FormulaTools\Exceptions\BracketsException;
 use Smoren\FormulaTools\Exceptions\InappropriateTokenException;
 use Smoren\FormulaTools\Exceptions\InappropriateTokenPairException;
 use Smoren\FormulaTools\Exceptions\InvalidTokenException;
@@ -459,7 +460,7 @@ class LogicFormulaValidatorTest extends Unit
         $validator = new LogicFormulaValidator($unaryOperators, $binaryOperators);
 
         // Then
-        $this->expectException(InappropriateTokenException::class);
+        $this->expectException(BracketsException::class);
         $this->expectExceptionMessage('Brackets error');
 
         // When
