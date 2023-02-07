@@ -13,7 +13,7 @@ class TokenException extends SyntaxException
 
     /**
      * @param string $message
-     * @param string|null $token
+     * @param string $token
      */
     public function __construct(string $message, string $token)
     {
