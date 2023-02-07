@@ -138,6 +138,16 @@ class LogicFormulaValidatorTest extends Unit
                 ['!', '(', '!', 'a', ')'],
             ],
             [
+                ['!'],
+                ['|', '&'],
+                ['!', '!', '(', '!', 'a', ')'],
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['!', '!', '(', '!', '!', 'a', ')'],
+            ],
+            [
                 ['NOT'],
                 ['OR', 'AND'],
                 [],
@@ -236,6 +246,16 @@ class LogicFormulaValidatorTest extends Unit
                 ['NOT'],
                 ['OR', 'AND'],
                 ['NOT', '(', 'NOT', 'a', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['NOT', 'NOT', '(', 'NOT', 'a', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['NOT', 'NOT', '(', 'NOT', 'NOT', 'a', ')'],
             ],
         ];
     }
@@ -1084,6 +1104,405 @@ class LogicFormulaValidatorTest extends Unit
                 ['OR', 'AND'],
                 ['a', 'OR', '(', 'OR', 'a', ')'],
                 'OR',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderForInappropriateTokenAfterClosingBracket
+     * @param array<string> $unaryOperators
+     * @param array<string> $binaryOperators
+     * @param array<string> $tokens
+     * @param string $badToken
+     * @return void
+     */
+    public function testInappropriateTokenAfterClosingBracket(array $unaryOperators, array $binaryOperators, array $tokens, string $badToken): void
+    {
+        // Given
+        $validator = new LogicFormulaValidator($unaryOperators, $binaryOperators);
+
+        // Then
+        $this->expectException(InappropriateTokenPairException::class);
+        $this->expectExceptionMessage("Inappropriate token '{$badToken}' after closing bracket");
+
+        // When
+        $validator->validate($tokens);
+    }
+
+    /**
+     * @return array<array{array<string>, array<string>, array<string>, string}>
+     */
+    public function dataProviderForInappropriateTokenAfterClosingBracket(): array
+    {
+        return [
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', ')', '(', 'b', ')'],
+                '(',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', ')', '(', 'b', '&', 'c', ')'],
+                '(',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '(', 'a', ')', '(', 'b', '&', 'c', ')', ')'],
+                '(',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', ')', '(', ')'],
+                '(',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', ')', 'b'],
+                'b',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', ')', 'b', '|', 'c'],
+                'b',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '(', 'a', ')', 'b', '|', 'c', ')'],
+                'b',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', ')', '!', 'b'],
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '(', 'a', ')', '!', 'b', ')'],
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '(', 'a', ')', '!', 'b', ')', 'c'],
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '(', 'a', ')', '!', 'b', ')', '!', 'c'],
+                '!',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', '(', 'b', ')'],
+                '(',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', '(', 'b', 'AND', 'c', ')'],
+                '(',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', '(', 'a', ')', '(', 'b', 'AND', 'c', ')', ')'],
+                '(',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', '(', ')'],
+                '(',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', 'b'],
+                'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', 'b', 'OR', 'c'],
+                'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', '(', 'a', ')', 'b', 'OR', 'c', ')'],
+                'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', 'NOT', 'b'],
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', '(', 'a', ')', 'NOT', 'b', ')'],
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', '(', 'a', ')', 'NOT', 'b', ')', 'c'],
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', '(', 'a', ')', 'NOT', 'b', ')', 'NOT', 'c'],
+                'NOT',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderForInappropriateTokenAfterUnaryOperator
+     * @dataProvider dataProviderForInappropriateTokenAfterBinaryOperator
+     * @param array<string> $unaryOperators
+     * @param array<string> $binaryOperators
+     * @param array<string> $tokens
+     * @param string $badToken
+     * @param string $previousToken
+     * @return void
+     */
+    public function testInappropriateTokenAfterOperator(array $unaryOperators, array $binaryOperators, array $tokens, string $badToken, string $previousToken): void
+    {
+        // Given
+        $validator = new LogicFormulaValidator($unaryOperators, $binaryOperators);
+
+        // Then
+        $this->expectException(InappropriateTokenPairException::class);
+        $this->expectExceptionMessage("Inappropriate token '{$badToken}' after operator '{$previousToken}'");
+
+        // When
+        $validator->validate($tokens);
+    }
+
+    /**
+     * @return array<array{array<string>, array<string>, array<string>, string, string}>
+     */
+    public function dataProviderForInappropriateTokenAfterUnaryOperator(): array
+    {
+        return [
+            [
+                ['!'],
+                ['|', '&'],
+                ['!', '&', 'a'],
+                '&',
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '!', '&', ')'],
+                '&',
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '!', '&', 'a', ')'],
+                '&',
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['!', '|', 'a'],
+                '|',
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '!', '|', ')'],
+                '|',
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '!', '|', 'a', ')'],
+                '|',
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '!', ')'],
+                ')',
+                '!',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['a', '&', '(', '!', ')', '|', 'b'],
+                ')',
+                '!',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['NOT', 'AND', 'a'],
+                'AND',
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'NOT', 'AND', ')'],
+                'AND',
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'NOT', 'AND', 'a', ')'],
+                'AND',
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['NOT', 'OR', 'a'],
+                'OR',
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'NOT', 'OR', ')'],
+                'OR',
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'NOT', 'OR', 'a', ')'],
+                'OR',
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'NOT', ')'],
+                ')',
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'AND', '(', 'NOT', ')', 'OR', 'b'],
+                ')',
+                'NOT',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<array{array<string>, array<string>, array<string>, string, string}>
+     */
+    public function dataProviderForInappropriateTokenAfterBinaryOperator(): array
+    {
+        return [
+            [
+                ['!'],
+                ['|', '&'],
+                ['a', '&', '&', 'b'],
+                '&',
+                '&',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['a', '&', '|', 'b'],
+                '|',
+                '&',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['a', '|', '&', 'b'],
+                '&',
+                '|',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['a', '|', '|', 'b'],
+                '|',
+                '|',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', '&', '&', 'b', ')', '|', 'c'],
+                '&',
+                '&',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', '&', '|', 'b', ')', '|', 'c'],
+                '|',
+                '&',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', '|', '&', 'b', ')', '|', 'c'],
+                '&',
+                '|',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', '|', '|', 'b', ')', '|', 'c'],
+                '|',
+                '|',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', '&', ')'],
+                ')',
+                '&',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', '|', ')'],
+                ')',
+                '|',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '(', 'a', '|', ')', 'b', '|', 'c', ')', '&', 'd'],
+                ')',
+                '|',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '(', 'a', '&', ')', 'b', '|', 'c', ')', '&', 'd'],
+                ')',
+                '&',
             ],
         ];
     }
