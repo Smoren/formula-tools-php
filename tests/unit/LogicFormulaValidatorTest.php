@@ -320,6 +320,61 @@ class LogicFormulaValidatorTest extends Unit
                 ['|', '&'],
                 ['a', '!', '(', 0, 'c', 'b', ')', ')'],
             ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [1],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [1.1],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [true],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [false],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [null],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [NAN],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [[]],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [['a']],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [(object)['a']],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'AND', '(', 0, 'OR', 'b', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'NOT', '(', 0, 'c', 'b', ')', ')'],
+            ],
         ];
     }
 
@@ -357,6 +412,16 @@ class LogicFormulaValidatorTest extends Unit
                 ['!'],
                 ['|', '&'],
                 ['!', '(', '!', '(', '(a)', '|', 'b', ')', '&', 'c', ')', '|', 'd'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(a)'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['NOT', '(', 'NOT', '(', '(a)', 'OR', 'b', ')', 'AND', 'c', ')', 'OR', 'd'],
             ],
         ];
     }
@@ -457,6 +522,76 @@ class LogicFormulaValidatorTest extends Unit
                 ['|', '&'],
                 ['(', 'a', ')', '&', '(', 'a', ')', ')'],
             ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['('],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [')', 'a'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [')', '('],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', '(', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', ')', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', ')', '(', ')', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [')', 'a', '('],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [')', 'AND', '(', 'a', ')', 'OR', '('],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                [')', 'AND', '(', 'a', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', '(', 'a', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', '(', 'a', ')', ')'],
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', ')', 'AND', '(', 'a', ')', ')'],
+            ],
         ];
     }
 
@@ -482,7 +617,7 @@ class LogicFormulaValidatorTest extends Unit
     }
 
     /**
-     * @return array<array{array<string>, array<string>, array<string>}>
+     * @return array<array{array<string>, array<string>, array<string>, string}>
      */
     public function dataProviderForLastTokenOperatorError(): array
     {
@@ -523,6 +658,42 @@ class LogicFormulaValidatorTest extends Unit
                 ['a', '|', '!'],
                 '!',
             ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['AND'],
+                'AND',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['OR'],
+                'OR',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['NOT'],
+                'NOT',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'OR', 'b', 'AND'],
+                'AND',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'AND', 'b', 'OR'],
+                'OR',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'OR', 'NOT'],
+                'NOT',
+            ],
         ];
     }
 
@@ -549,7 +720,7 @@ class LogicFormulaValidatorTest extends Unit
     }
 
     /**
-     * @return array<array{array<string>, array<string>, array<string>}>
+     * @return array<array{array<string>, array<string>, array<string>, string, string}>
      */
     public function dataProviderForInappropriateTokenAfterOperand(): array
     {
@@ -658,6 +829,261 @@ class LogicFormulaValidatorTest extends Unit
                 ['(', '(', 'a', '|', '<>', 'b', '!', ')', 'c', ')'],
                 '!',
                 'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'b'],
+                'b',
+                'a',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'OR', 'b', 'c'],
+                'c',
+                'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'OR', 'b', 'c', 'AND', 'd'],
+                'c',
+                'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', 'OR', '(', 'b', 'c', ')', 'AND', 'd', ')', 'e'],
+                'c',
+                'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', '(', ')'],
+                '(',
+                'a',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', '(', 'b', ')'],
+                '(',
+                'a',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'OR', 'b', '(', 'c', ')'],
+                '(',
+                'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'OR', 'b', '(', 'c', 'AND', 'd', ')'],
+                '(',
+                'b',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', 'OR', 'b', '(', 'c', ')', 'AND', 'd', ')', 'e'],
+                '(',
+                'b',
+            ],
+            [
+                ['NOT', '<>'],
+                ['OR', 'AND'],
+                ['a', 'NOT', 'b'],
+                'NOT',
+                'a',
+            ],
+            [
+                ['NOT', '<>'],
+                ['OR', 'AND'],
+                ['a', '<>', 'b'],
+                '<>',
+                'a',
+            ],
+            [
+                ['NOT', '<>'],
+                ['OR', 'AND'],
+                ['a', 'AND', 'b', 'NOT', 'c'],
+                'NOT',
+                'b',
+            ],
+            [
+                ['NOT', '<>'],
+                ['OR', 'AND'],
+                ['a', 'OR', '<>', 'b', 'NOT', 'c'],
+                'NOT',
+                'b',
+            ],
+            [
+                ['NOT', '<>'],
+                ['OR', 'AND'],
+                ['(', 'a', 'OR', '<>', 'b', 'NOT', ')', 'c'],
+                'NOT',
+                'b',
+            ],
+            [
+                ['NOT', '<>'],
+                ['OR', 'AND'],
+                ['(', '(', 'a', 'OR', '<>', 'b', 'NOT', ')', 'c', ')'],
+                'NOT',
+                'b',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderForInappropriateTokenAfterOpeningBracket
+     * @param array<string> $unaryOperators
+     * @param array<string> $binaryOperators
+     * @param array<string> $tokens
+     * @param string $badToken
+     * @return void
+     */
+    public function testInappropriateTokenAfterOpeningBracket(array $unaryOperators, array $binaryOperators, array $tokens, string $badToken): void
+    {
+        // Given
+        $validator = new LogicFormulaValidator($unaryOperators, $binaryOperators);
+
+        // Then
+        $this->expectException(InappropriateTokenPairException::class);
+        $this->expectExceptionMessage("Inappropriate token '{$badToken}' after opening bracket");
+
+        // When
+        $validator->validate($tokens);
+    }
+
+    /**
+     * @return array<array{array<string>, array<string>, array<string>, string}>
+     */
+    public function dataProviderForInappropriateTokenAfterOpeningBracket(): array
+    {
+        return [
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', ')'],
+                ')',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '(', ')', ')'],
+                ')',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['a', '&', '(', ')', '|', 'c'],
+                ')',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', 'a', '&', '(', ')', ')', '|', 'c'],
+                ')',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '&', ')'],
+                '&',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '&', 'a', ')'],
+                '&',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['a', '&', '(', '&', 'a', ')'],
+                '&',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '|', ')'],
+                '|',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['(', '|', 'a', ')'],
+                '|',
+            ],
+            [
+                ['!'],
+                ['|', '&'],
+                ['a', '|', '(', '|', 'a', ')'],
+                '|',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', ')'],
+                ')',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', '(', ')', ')'],
+                ')',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'AND', '(', ')', 'OR', 'c'],
+                ')',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'a', 'AND', '(', ')', ')', 'OR', 'c'],
+                ')',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'AND', ')'],
+                'AND',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'AND', 'a', ')'],
+                'AND',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'AND', '(', 'AND', 'a', ')'],
+                'AND',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'OR', ')'],
+                'OR',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['(', 'OR', 'a', ')'],
+                'OR',
+            ],
+            [
+                ['NOT'],
+                ['OR', 'AND'],
+                ['a', 'OR', '(', 'OR', 'a', ')'],
+                'OR',
             ],
         ];
     }
