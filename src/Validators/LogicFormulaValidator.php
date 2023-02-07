@@ -68,7 +68,7 @@ class LogicFormulaValidator
             }
         }
 
-        $lastToken = $tokens[count($tokens)-1];
+        $lastToken = $tokens[count($tokens) - 1];
 
         if ($bracketsCount !== 0) {
             throw new InappropriateTokenException(
@@ -90,31 +90,36 @@ class LogicFormulaValidator
          */
         foreach (LoopHelper::pairwise($tokens) as [$lhs, $rhs]) {
             switch (true) {
-                case $this->isOperand($lhs) && ($this->isOperand($rhs) || $this->isOpeningBracket($rhs) || $this->isUnaryOperator($rhs)):
+                case $this->isOperand($lhs)
+                    && ($this->isOperand($rhs) || $this->isOpeningBracket($rhs) || $this->isUnaryOperator($rhs)):
                     throw new InappropriateTokenPairException(
                         "Inappropriate token '{$rhs}' after operand '{$lhs}'",
                         $rhs,
                         $lhs
                     );
-                case $this->isOpeningBracket($lhs) && ($this->isClosingBracket($rhs) || $this->isBinaryOperator($rhs)):
+                case $this->isOpeningBracket($lhs)
+                    && ($this->isClosingBracket($rhs) || $this->isBinaryOperator($rhs)):
                     throw new InappropriateTokenPairException(
                         "Inappropriate token '{$rhs}' after opening bracket",
                         $rhs,
                         $lhs
                     );
-                case $this->isClosingBracket($lhs) && ($this->isOpeningBracket($rhs) || $this->isOperand($rhs) || $this->isUnaryOperator($rhs)):
+                case $this->isClosingBracket($lhs)
+                    && ($this->isOpeningBracket($rhs) || $this->isOperand($rhs) || $this->isUnaryOperator($rhs)):
                     throw new InappropriateTokenPairException(
                         "Inappropriate token '{$rhs}' after closing bracket",
                         $rhs,
                         $lhs
                     );
-                case $this->isUnaryOperator($lhs) && ($this->isOperator($rhs) || $this->isClosingBracket($rhs)):
+                case $this->isUnaryOperator($lhs)
+                    && ($this->isOperator($rhs) || $this->isClosingBracket($rhs)):
                     throw new InappropriateTokenPairException(
                         "Inappropriate token '{$rhs}' after unary operator '{$lhs}'",
                         $rhs,
                         $lhs
                     );
-                case $this->isBinaryOperator($lhs) && ($this->isBinaryOperator($rhs) || $this->isClosingBracket($rhs)):
+                case $this->isBinaryOperator($lhs)
+                    && ($this->isBinaryOperator($rhs) || $this->isClosingBracket($rhs)):
                     throw new InappropriateTokenPairException(
                         "Inappropriate token '{$rhs}' after binary operator '{$lhs}'",
                         $rhs,
