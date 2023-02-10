@@ -472,7 +472,7 @@ final class PlusFactory implements IBinaryOpFactory
 {
     // function getLeftPrecedence()...
 
-    function create() { }
+    function create($lhs, $rhs) { }
 }
 ```
 
