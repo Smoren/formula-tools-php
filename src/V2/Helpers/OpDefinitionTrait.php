@@ -15,7 +15,7 @@ trait OpDefinitionTrait
         $this->rightPrecedence = $rightPrecedence;
     }
 
-    public function getLeftPrecedence():  int
+    public function getLeftPrecedence(): int
     {
         return $this->leftPrecedence;
     }
