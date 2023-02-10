@@ -6,7 +6,8 @@ namespace Smoren\FormulaTools\V2\Helpers;
 
 trait OpDefinitionTrait
 {
-    protected int $leftPrecedence, $rightPrecedence;
+    protected int $leftPrecedence;
+    protected int $rightPrecedence;
 
     public function __construct(int $leftPrecedence, int $rightPrecedence)
     {
@@ -14,6 +15,13 @@ trait OpDefinitionTrait
         $this->rightPrecedence = $rightPrecedence;
     }
 
-    public function getLeftPrecedence():  int { return $this->leftPrecedence; }
-    public function getRightPrecedence(): int { return $this->rightPrecedence; }
+    public function getLeftPrecedence():  int
+    {
+        return $this->leftPrecedence;
+    }
+
+    public function getRightPrecedence(): int
+    {
+        return $this->rightPrecedence;
+    }
 }

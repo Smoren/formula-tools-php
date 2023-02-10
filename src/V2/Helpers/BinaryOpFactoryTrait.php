@@ -26,5 +26,8 @@ trait BinaryOpFactoryTrait
      * @param T $rhs
      * @return C
      */
-    public function create($lhs, $rhs) { return new $this->class($lhs, $rhs); }
+    public function create($lhs, $rhs)
+    {
+        return new $this->class($lhs, $rhs);
+    }
 }

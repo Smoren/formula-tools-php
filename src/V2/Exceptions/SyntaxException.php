@@ -25,7 +25,8 @@ class SyntaxException extends \ErrorException
      */
     protected function stringify($x): string
     {
-        return json_encode($x,
+        return json_encode(
+            $x,
             JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE |
             JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR,
         );

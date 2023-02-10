@@ -13,7 +13,7 @@ class OpAssociationException extends SyntaxException
 
     public function __construct(IOpDefinition $op, int $position)
     {
-        parent::__construct('Operator `'.get_class($op).'` is non-associative', $position);
+        parent::__construct('Operator `' . get_class($op) . '` is non-associative', $position);
         $this->op = $op;
     }
 }

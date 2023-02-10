@@ -83,7 +83,7 @@ class FormulaParser implements IParser
     protected function reduce(int $followingPrecedence): void
     {
         $i = count($this->resultStack) - 1; // `i` always equals the index of the last node.
-        for ($opIndex = count($this->opStack); $opIndex--; ) {
+        for ($opIndex = count($this->opStack); $opIndex--;) {
             $op = $this->opStack[$opIndex];
             if (!$this->shouldReduce($op, $followingPrecedence)) {
                 return; // Reduction stops here.
@@ -156,7 +156,7 @@ class FormulaParser implements IParser
             // the right-hand-side operand back onto the stack and create a stub binary operator
             // that remembers our right precedence.
             $this->resultStack[] = $rhs;
-            $this->opStack[] = new class($op->getRightPrecedence(), $factory) implements IBinaryOpFactory {
+            $this->opStack[] = new class ($op->getRightPrecedence(), $factory) implements IBinaryOpFactory {
                 private int $precedence;
                 /** @var callable(Result, Result): Result */
                 private $factory;
@@ -171,12 +171,20 @@ class FormulaParser implements IParser
                     $this->factory = $factory;
                 }
 
-                public function getLeftPrecedence(): int {
+                public function getLeftPrecedence(): int
+                {
                     throw new \LogicException("Unreachable");
                 }
 
-                public function getRightPrecedence(): int { return $this->precedence; }
-                public function create($lhs, $rhs) { return ($this->factory)($lhs, $rhs); }
+                public function getRightPrecedence(): int
+                {
+                    return $this->precedence;
+                }
+
+                public function create($lhs, $rhs)
+                {
+                    return ($this->factory)($lhs, $rhs);
+                }
             };
         } else {
             // A circumfix operator does not have precedence. Reduce it right away.

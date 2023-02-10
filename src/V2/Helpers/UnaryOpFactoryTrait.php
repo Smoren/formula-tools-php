@@ -25,5 +25,8 @@ trait UnaryOpFactoryTrait
      * @param T $child
      * @return C
      */
-    public function create($child) { return new $this->class($child); }
+    public function create($child)
+    {
+        return new $this->class($child);
+    }
 }
