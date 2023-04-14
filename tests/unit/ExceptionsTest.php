@@ -20,8 +20,8 @@ class ExceptionsTest extends Unit
         $result = new TokenException('some message', 'some token');
 
         // Then
-        $this->assertEquals('some message', $result->getMessage());
-        $this->assertEquals('some token', $result->getToken());
+        $this->assertSame('some message', $result->getMessage());
+        $this->assertSame('some token', $result->getToken());
     }
 
     public function testInappropriateTokenPairException(): void
@@ -30,8 +30,8 @@ class ExceptionsTest extends Unit
         $result = new InappropriateTokenPairException('some message', 'curr token', 'prev token');
 
         // Then
-        $this->assertEquals('some message', $result->getMessage());
-        $this->assertEquals('curr token', $result->getToken());
-        $this->assertEquals('prev token', $result->getPrevToken());
+        $this->assertSame('some message', $result->getMessage());
+        $this->assertSame('curr token', $result->getToken());
+        $this->assertSame('prev token', $result->getPrevToken());
     }
 }
